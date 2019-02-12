@@ -1,3 +1,5 @@
+#![cfg_attr(windows, windows_subsystem = "windows")]
+
 use std::collections::{HashMap, HashSet};
 use std::fs::File;
 use std::io::{prelude::*, BufRead, BufReader, Error, ErrorKind, Result};
