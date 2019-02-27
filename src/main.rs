@@ -33,7 +33,7 @@ impl Playlist {
         for (ft, path) in path
             .read_dir()
             .unwrap()
-            .filter_map(|s| s.ok())
+            .filter_map(Result::ok)
             .filter_map(|s| s.file_type().ok().map(|ft| (ft, s.path())))
         {
             match (ft.is_dir(), ft.is_file()) {
@@ -49,7 +49,7 @@ impl Playlist {
             .iter()
             .filter_map(|s| {
                 s.extension()
-                    .and_then(|e| e.to_str())
+                    .and_then(std::ffi::OsStr::to_str)
                     .and_then(|e| Some((s, e)))
             })
             .filter(|(_, e)| match e.to_lowercase().as_str() {
@@ -277,7 +277,7 @@ impl State {
         let mut last = None;
         for msg in BufReader::new(file)
             .lines()
-            .filter_map(|line| line.ok())
+            .filter_map(Result::ok)
             .filter_map(|line| Message::parse(line).ok())
         {
             match msg {
@@ -380,7 +380,7 @@ impl Message {
 
         if let Some(id) = val
             .get("request_id")
-            .and_then(|r| r.as_u64())
+            .and_then(Value::as_u64)
             .map(|r| r as u32)
         {
             return Ok(Message::Response(id, val));
